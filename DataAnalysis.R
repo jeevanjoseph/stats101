@@ -1,5 +1,12 @@
 data<- read.csv(file="WA_Fn-UseC_-Telco-Customer-Churn.csv")
+par(font.axis = 1)
+par(font.main = 2)
+par(font.sub =3)
+par(font.lab =7)
+
 mosaicplot(Churn~Contract,data=data)
+device.off()
+graphics.off()
 mosaicplot(Churn~Contract+gender,data=data)
 mosaicplot(Churn~Contract+SeniorCitizen,data=data)
 mosaicplot(Churn~Contract+PhoneService,data=data)
@@ -21,4 +28,6 @@ data$tenure_d <- cut(data$tenure,c(0,6,12,18,24,30,36,42,48,54,60,72,84,96,200))
 mosaicplot(Churn~Contract+PaymentMethod+tenure_d,data=data)
 data$tenure_d <- cut(data$tenure,c(0,6,12,24,36,48,60,84,200))
 mosaicplot(Churn~Contract+PaymentMethod+tenure_d,data=data)
+
+par()
 
