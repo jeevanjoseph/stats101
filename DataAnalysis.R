@@ -1,5 +1,54 @@
+# Laod Data in to a data frame
 data<- read.csv(file="WA_Fn-UseC_-Telco-Customer-Churn.csv")
-nrow(data[complete.cases(data),])
+
+# summarize the data frame
+summary.data.frame(data)
+
+#Combine redundant levels 
+summary(data$MultipleLines)
+levels(data$MultipleLines) <- c("No", "No", "Yes")
+summary(data$MultipleLines)
+
+summary(data$OnlineSecurity)
+levels(data$OnlineSecurity) <- c("No", "No", "Yes")
+summary(data$OnlineSecurity)
+
+summary(data$OnlineBackup)
+levels(data$OnlineBackup) <- c("No", "No", "Yes")
+summary(data$OnlineBackup)
+
+summary(data$DeviceProtection)
+levels(data$DeviceProtection) <- c("No", "No", "Yes")
+summary(data$DeviceProtection)
+
+summary(data$TechSupport)
+levels(data$TechSupport) <- c("No", "No", "Yes")
+summary(data$TechSupport)
+
+summary(data$StreamingTV)
+levels(data$StreamingTV) <- c("No", "No", "Yes")
+summary(data$StreamingTV)
+
+summary(data$StreamingMovies)
+levels(data$StreamingMovies) <- c("No", "No", "Yes")
+summary(data$StreamingMovies)
+
+# summarize the data frame after readjusting the redundant levels
+summary.data.frame(data)
+
+# find missing data - NAs
+nrow(data[!complete.cases(data),])
+# %age of NAs
+(nrow(data[!complete.cases(data),])/nrow(data))*100
+
+# find all obs with tenure =0 
+nrow(data[data$tenure==0,])
+# discretize tenure as "Tenure"
+data$Tenure<-cut(data$tenure,c(0,6,20,40,60,Inf),labels = c("0-6","7-20","21-40","41-60","61+"), include.lowest = TRUE)
+summary(data$Tenure)
+# drop the continuous variable "tenure"
+data$tenure<-NULL
+
 data_clean<-na.omit(data)
 nrow(data_clean[data_clean$PhoneService=="No" && data_clean$Churn=="Yes",])
 phone_data<-data[data$PhoneService=='Yes',]
