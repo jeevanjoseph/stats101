@@ -318,12 +318,16 @@ mosaicplot(Churn~PaymentMethod+MonthlySpend+Tenure, data=data, col = c(124,102,4
 
 
 ### Logistic regtression - preparing datasets
+install.packages("caTools")
+install.packages("ROSE")
+install.packages('rpart')
 library("caTools")
 library("ROSE")
+library("rpart")
 #set.seed(5) ## 84%
 #set.seed(30), 49
 
-for (i in 1:1000){
+
 set.seed(4)
 data$Attrition<- ifelse(data$Churn=="Yes",1,0)
 sample<-sample.split(data$Attrition,SplitRatio=.90)
@@ -374,10 +378,10 @@ predictions_refined<-factor(predictions_refined,labels = c("No","Yes"))
 summary(predictions_refined)
 
 comparison<-data.frame(predictions_tree,predictions_refined,testSet$Churn)
-print(i)
-print(summary(comparison))
 
-}
+summary(comparison)
+
+
 
 
 
