@@ -82,8 +82,8 @@ quantile(data$tenure,probs = seq(0,1,.2))
 # find all obs with tenure =0 
 nrow(data[data$tenure==0,])
 # discretize tenure as "Tenure"
-data$Tenure<-cut(data$tenure,c(0,3,6,12,18,24,60,Inf),labels = c("0-3","4-6","7-12","13-18","19-24","25-60","60+"), include.lowest = TRUE)
-
+data$Tenure<-cut(data$tenure,c(0,2,6,11,18,24,60,Inf),labels = c("< 3","3-6","7-11","12-18","19-24","25-60","60+"), include.lowest = TRUE)
+#data$Tenure<-cut(data$tenure,c(0,6,20,40,61,Inf),labels = c("< 6","6-20","20-40","40-61","61+"), include.lowest = TRUE)
 summary(data$Tenure)
 # drop the continuous variable "tenure"
 #data$tenure<-NULL
@@ -92,7 +92,8 @@ summary(data$Tenure)
 # dividing the distribution in to quintiles
 quantile(data$MonthlyCharges,probs = seq(0,1,.2))
 # discretize tenure as "MonthlySpend"
-data$MonthlySpend<-cut(data$MonthlyCharges,c(18.25,24.5,66.40,80.70,95.15,Inf),labels = c("18-25","26-65","66-81","82-96","96+"), include.lowest = TRUE)
+#data$MonthlySpend<-cut(data$MonthlyCharges,c(18,25,65,80,95,Inf),labels = c("18-25","26-65","65-80","80-95","95+"), include.lowest = TRUE)
+data$MonthlySpend<-cut(data$MonthlyCharges,c(15,30,45,70,80,95,Inf),labels = c("15-30","30-45","45-70","70-80","80-95","95+"), include.lowest = TRUE)
 summary(data$MonthlySpend)
 # drop the continuous variable "MonthlyCharges"
 #data$MonthlyCharges<-NULL
@@ -100,9 +101,10 @@ summary(data$MonthlySpend)
 
 # Find the bin sizes to discretize monthly charges by 
 # dividing the distribution in to quintiles
-quantile(data$TotalCharges,probs = seq(0,1,.2), na.rm = TRUE)
+quantile(data$TotalCharges,probs = seq(0,1,.2))
 # discretize tenure as "TotalSpend"
-data$TotalSpend<-cut(data$TotalCharges,c(18,275,972,2158,4748,Inf),labels = c("18-275","276-972","973-2158","2159-4748","4748+"), include.lowest = TRUE)
+#data$TotalSpend<-cut(data$TotalCharges,c(18,275,972,2158,4748,Inf),labels = c("18-275","276-972","973-2158","2159-4748","4748+"), include.lowest = TRUE)
+data$TotalSpend<-cut(data$TotalCharges,c(0,1000,2000,4000,6000,Inf),labels = c("<1000","1000-2000","2000-4000","4000-6000","6000+"), include.lowest = TRUE)
 summary(data$TotalSpend)
 # drop the continuous variable "TotalCharges"
 #data$TotalCharges<-NULL
@@ -135,134 +137,247 @@ univariate_stats <- function(dataDist, title){
 
 
 # Plot the Gender
-univariate_stats(data$Contract, "Contract")
+univariate_stats(data$gender, "Gender")
+summary(data$gender)
 
 # Plot the SeniorCitizen
 univariate_stats(data$SeniorCitizen, "Senior Customer")
+summary(data$SeniorCitizen)
 
 # Plot the Partner
 univariate_stats(data$Partner, "Partner")
+summary(data$Partner)
 
 # Plot the Dependents
 univariate_stats(data$Dependents, "Dependents")
+summary(data$Dependents)
 
 # Plot the MultipleLines
 univariate_stats(data$MultipleLines, "Has Multiple Lines")
+summary(data$MultipleLines)
 
 # Plot the InternetService
 univariate_stats(data$InternetService, "Has Internet Service")
+summary(data$InternetService)
 
 
 # Plot the Contract type
 univariate_stats(data$Contract, "Contract Type")
+summary(data$Contract)
 
 # Plot the PaperlessBilling
 univariate_stats(data$PaperlessBilling, "PaperlessBilling")
+summary(data$PaperlessBilling)
 
 # Plot the Payment Method
 univariate_stats(data$PaymentMethod, "Payment Method")
+summary(data$PaymentMethod)
 
 # Plot the Churn
 univariate_stats(data$Churn, "Discontinued Service")
+summary(data$Churn)
 
 # Plot the Tenure
 univariate_stats(data$Tenure, "Tenure")
+summary(data$Tenure)
 
 # Plot the Monthly spend
 univariate_stats(data$MonthlySpend, "Monthly Spend")
+plot(data$MonthlyCharges,data$tenure, col = c(124,102,459,203,541,368,134) )
+
+
+summary(data$MonthlySpend)
 
 # Plot the TotalSpend
 univariate_stats(data$TotalSpend, "Total Spend")
+plot(data$TotalCharges,data$tenure, col = c(124,102,459,203,541,368,134) )
+summary(data$TotalSpend)
 
 
 # Plot the Device protection
 univariate_stats(data$DeviceProtection, "Device Protection Purchased")
+summary(data$DeviceProtection)
 
 # Plot the Tenure (Continuous)
 univariate_stats(data$tenure, "Tenure")
+summary(data$tenure)
 
 # Plot the MonthlyCharges (Continuous)
-univariate_stats(data$MonthlyCharges, "Monthly Charges")
+univariate_stats(data[(data$MonthlyCharges<30 & data$MonthlyCharges>15),]$MonthlyCharges, "15 < Monthly Charges < 30 ")
+summary(data[(data$MonthlyCharges<30 & data$MonthlyCharges>15),]$MonthlyCharges)
+
+# plot monthly for high rate subscribers
+univariate_stats(data[(data$MonthlyCharges>40),]$MonthlyCharges, "Monthly Charges >40 ")
+summary(data[(data$MonthlyCharges>40),]$MonthlyCharges)
 
 # Plot the TotalCharges (Continuous)
 univariate_stats(data$TotalCharges, "Total Charges")
+summary(data$TotalCharges)
 
 
 
 
 # Bivariate Statistics
-# PLot Tenure by Contract Type
-barplot(table(data$Tenure,data$Contract), col = c(124,102,459,203,541,368,134,505,189),	legend = rownames(table(data$Tenure,data$Contract)))
-
-barplot(table(compare$prediction,compare$Churn), col = c(124,102,459,203,541,368,134,505,189),
-        legend = rownames(table(compare$prediction,compare$Churn)))
+# use Chi-Squared test to analyze the dependence.
 
 
-mosaicplot(Churn~Contract,data=data)
+# Chi-Squared test of Indenpendence - Gender x Churn and plot
+chisq.test(table(data$gender,data$Churn))
+barplot(table(data$gender,data$Churn), col = c(124,102,459,203,541,368,134,505,189),	legend = rownames(table(data$gender,data$Churn)), main = "Gender x Churn")
 
-mosaicplot(Churn~Contract+gender,data=data)
-mosaicplot(Churn~Contract+SeniorCitizen,data=data)
-mosaicplot(Churn~Contract+PhoneService,data=data)
-mosaicplot(Churn~Contract+MultipleLines,data=data)
-mosaicplot(Churn~Contract+PaperlessBilling,data=data)
-mosaicplot(Churn~Contract+PaperlessBilling+PaymentMethod,data=data)
-mosaicplot(Churn~Contract+PaymentMethod,data=data)
-mosaicplot(Churn~gender+PaymentMethod,data=data)
-mosaicplot(Churn~Dependents+PaymentMethod,data=data)
-mosaicplot(Churn~Partner+Dependents+PaymentMethod,data=data)
-mosaicplot(Churn~Dependents+PaymentMethod,data=data)
-data$tenure_d <- cut(data$tenure,seq(0,120,6))
-mosaicplot(Churn~Contract+PaymentMethod+tenure_d,data=data)
-data$tenure_d <- cut(data$tenure,seq(0,120,24))
-mosaicplot(Churn~Contract+PaymentMethod+tenure_d,data=data)
-data$tenure_d <- cut(data$tenure,seq(0,90,24))
-mosaicplot(Churn~Contract+PaymentMethod+tenure_d,data=data)
-data$tenure_d <- cut(data$tenure,c(0,6,12,18,24,30,36,42,48,54,60,72,84,96,200))
-mosaicplot(Churn~Contract+PaymentMethod+tenure_d,data=data)
-data$tenure_d <- cut(data$tenure,c(0,6,12,24,36,48,60,84,200))
-mosaicplot(Churn~Tenure,data=data)
-mosaicplot(Churn~Tenure+MonthlySpend,data=data)
+# Chi-Squared test of Indenpendence - SeniorCitizen x Churn and plot
+chisq.test(table(data$SeniorCitizen,data$Churn))
+barplot(table(data$SeniorCitizen,data$Churn), col = c(124,102,459,203,541,368,134,505,189),	legend = rownames(table(data$SeniorCitizen,data$Churn)), main="SeniorCitizen x Churn")
 
 
-# there are'nt anyone who has moved on that did not have a phone service.
-nrow(data[data$PhoneService=="No" && data$Churn=="Yes",])
-# we can eliminate the data for the folks who do not have phone service, since we are interested only in the folks who do, and its only the folks who do that affect the churn number.
-
-phone_data<-data[data$PhoneService=='Yes',]
-
-summary(phone_data$TotalCharges)
-phone_data$TotalCharges_q <- cut(phone_data$TotalCharges,c(0,415,1422,4026,8685))
-summary(phone_data$tenure)
-phone_data$tenure_d <- cut(phone_data$tenure,c(0,9,29,56,72))
-summary(phone_data$MonthlyCharges)
-phone_data$MonthlyCharges_q <- cut(phone_data$MonthlyCharges,c(0,45,75,92,120))
-
-mosaicplot(Churn~Contract+tenure_d+MonthlyCharges_q,data=phone_data)
-mosaicplot(Churn~Contract+tenure_d+TotalCharges_q,data=phone_data)
-
-phone_data_clean<-phone_data[,c("customerID","gender","SeniorCitizen_f","Partner","Dependents","tenure_d","PhoneService","MultipleLines","InternetService","OnlineSecurity","OnlineBackup","DeviceProtection","TechSupport","StreamingTV","StreamingMovies","Contract","PaperlessBilling","PaymentMethod","TotalCharges_q","MonthlyCharges_q","Churn")]
-
-sample<-sample.split(data$Churn,splitRatio=.80)
+# Chi-Squared test of Indenpendence - Partner x Churn and plot
+chisq.test(table(data$Partner,data$Churn))
+barplot(table(data$Partner,data$Churn), col = c(124,102,459,203,541,368,134,505,189),	legend = rownames(table(data$Partner,data$Churn)), main="Partner x Churn")
 
 
-### Logistic regtression
+# Chi-Squared test of Indenpendence - Dependents x Churn and plot
+chisq.test(table(data$Dependents,data$Churn))
+barplot(table(data$Dependents,data$Churn), col = c(124,102,459,203,541,368,134,505,189),	legend = rownames(table(data$Dependents,data$Churn)), main="Dependents x Churn")
+
+
+# Chi-Squared test of Indenpendence - Tenure x Churn and plot
+chisq.test(table(data$Tenure,data$Churn))
+barplot(table(data$Tenure,data$Churn), col = c(124,102,459,203,541,368,134,505,189),	legend = rownames(table(data$Tenure,data$Churn)), main="Tenure x Churn")
+
+
+# Chi-Squared test of Indenpendence - MultipleLines x Churn and plot
+chisq.test(table(data$MultipleLines,data$Churn))
+barplot(table(data$MultipleLines,data$Churn), col = c(124,102,459,203,541,368,134,505,189),	legend = rownames(table(data$MultipleLines,data$Churn)), main="MultipleLines x Churn")
+
+
+# Chi-Squared test of Indenpendence - InternetService x Churn and plot
+chisq.test(table(data$InternetService,data$Churn))
+barplot(table(data$InternetService,data$Churn), col = c(124,102,459,203,541,368,134,505,189),	legend = rownames(table(data$InternetService,data$Churn)), main="InternetService x Churn")
+
+
+# Chi-Squared test of Indenpendence - OnlineSecurity x Churn and plot
+chisq.test(table(data$OnlineSecurity,data$Churn),correct = FALSE)
+barplot(table(data$OnlineSecurity,data$Churn), col = c(124,102,459,203,541,368,134,505,189),	legend = rownames(table(data$OnlineSecurity,data$Churn)), main="OnlineSecurity x Churn")
+
+
+# Chi-Squared test of Indenpendence - OnlineBackup x Churn and plot
+chisq.test(table(data$OnlineBackup,data$Churn))
+barplot(table(data$OnlineBackup,data$Churn), col = c(124,102,459,203,541,368,134,505,189),	legend = rownames(table(data$OnlineBackup,data$Churn)), main="OnlineBackup x Churn")
+
+# Chi-Squared test of Indenpendence - DeviceProtection x Churn and plot
+chisq.test(table(data$DeviceProtection,data$Churn))
+barplot(table(data$DeviceProtection,data$Churn), col = c(124,102,459,203,541,368,134,505,189),	legend = rownames(table(data$DeviceProtection,data$Churn)), main="DeviceProtection x Churn")
+
+# Chi-Squared test of Indenpendence - TechSupport x Churn and plot
+chisq.test(table(data$TechSupport,data$Churn))
+barplot(table(data$TechSupport,data$Churn), col = c(124,102,459,203,541,368,134,505,189),	legend = rownames(table(data$TechSupport,data$Churn)), main="TechSupport x Churn")
+
+# Chi-Squared test of Indenpendence - StreamingTV x Churn and plot
+chisq.test(table(data$StreamingTV,data$Churn))
+barplot(table(data$StreamingTV,data$Churn), col = c(124,102,459,203,541,368,134,505,189),	legend = rownames(table(data$StreamingTV,data$Churn)), main="StreamingTV x Churn")
+
+# Chi-Squared test of Indenpendence - StreamingMovies x Churn and plot
+chisq.test(table(data$StreamingMovies,data$Churn))
+barplot(table(data$StreamingMovies,data$Churn), col = c(124,102,459,203,541,368,134,505,189),	legend = rownames(table(data$StreamingMovies,data$Churn)), main="StreamingMovies x Churn")
+
+# Chi-Squared test of Indenpendence - Contract x Churn and plot
+chisq.test(table(data$Contract,data$Churn))
+barplot(table(data$Contract,data$Churn), col = c(124,102,459,203,541,368,134,505,189),	legend = rownames(table(data$Contract,data$Churn)), main="Contract x Churn")
+
+# Chi-Squared test if Indenpendence - PaperlessBilling x Churn and plot
+chisq.test(table(data$PaperlessBilling,data$Churn))
+barplot(table(data$PaperlessBilling,data$Churn), col = c(124,102,459,203,541,368,134,505,189),	legend = rownames(table(data$PaperlessBilling,data$Churn)), main="PaperlessBilling x Churn")
+
+# Chi-Squared test of Indenpendence - PaymentMethod x Churn and plot
+chisq.test(table(data$PaymentMethod,data$Churn))
+barplot(table(data$PaymentMethod,data$Churn), col = c(124,102,459,203,541,368,134,505,189),	legend = rownames(table(data$PaymentMethod,data$Churn)), main="OnlineSecurity x Churn")
+
+# Chi-Squared test of Indenpendence - MonthlySpend x Churn and plot
+chisq.test(table(data$MonthlySpend,data$Churn))
+barplot(table(data$MonthlySpend,data$Churn), col = c(124,102,459,203,541,368,134,505,189),	legend = rownames(table(data$MonthlySpend,data$Churn)), main="MonthlySpend x Churn")
+plot(data$MonthlyCharges,data$tenure)
+
+
+# Chi-Squared test of Indenpendence - TotalSpend x Churn and plot
+chisq.test(table(data$TotalSpend,data$Churn))
+barplot(table(data$TotalSpend,data$Churn), col = c(124,102,459,203,541,368,134,505,189),	legend = rownames(table(data$TotalSpend,data$Churn)), main="TotalSpend x Churn")
+plot(data$TotalCharges,data$tenure)
+
+
+
+
+
+# Mosaic plots to show the interaction of multiple variables.
+mosaicplot(Churn~Contract,data=data,col = c(124,102,459,203,541,368,134,505,189), main = "Churn By Contract")
+
+
+mosaicplot(Churn~gender,data=data,col = c(124,102,459,203,541,368,134,505,189), main = "Churn By Gender")
+mosaicplot(Churn~Tenure+MonthlySpend, data=data, col = c(124,102,459,203,541,368,134,505,189), main = "Churn By Tenure x Monthly Spend")
+mosaicplot(Churn~Contract+MonthlySpend, data=data, col = c(124,102,459,203,541,368,134,505,189), main = "Churn By Tenure x Monthly Spend")
+mosaicplot(Churn~PaymentMethod+MonthlySpend+Tenure, data=data, col = c(124,102,459,203,541,368,134,505,189), main = "Churn By Payment Method x Monthly Spend x Tenure")
+
+
+### Logistic regtression - preparing datasets
+library("caTools")
+library("ROSE")
+#set.seed(5) ## 84%
+#set.seed(30), 49
+
+for (i in 1:1000){
+set.seed(4)
 data$Attrition<- ifelse(data$Churn=="Yes",1,0)
-sample<-sample.split(data$Attrition,SplitRatio=.80)
+sample<-sample.split(data$Attrition,SplitRatio=.90)
 trainingSet <- data[sample,]
 testSet <- data[!sample,]
-model<-glm(data$Attrition~data$gender+data$SeniorCitizen+data$Partner+data$Dependents+data$MultipleLines+data$InternetService+data$OnlineSecurity+data$OnlineBackup+data$DeviceProtection+data$TechSupport+data$StreamingTV+data$StreamingMovies+data$Contract+data$PaperlessBilling+data$PaymentMethod+data$Tenure+data$MonthlySpend+data$TotalSpend , family = binomial(link = "logit"),data = trainingSet)
+
+
+# Logistic Regression Model
+model<-glm(Attrition~gender+SeniorCitizen+Partner+Dependents+MultipleLines+
+             InternetService+OnlineSecurity+OnlineBackup+DeviceProtection+
+             TechSupport+StreamingTV+StreamingMovies+Contract+PaperlessBilling+
+             PaymentMethod+Tenure+MonthlyCharges+
+             TotalCharges , family = binomial(link = "logit"),data = trainingSet)
 summary(model)
-model_refined<-glm(Attrition~SeniorCitizen+MultipleLines+InternetService+OnlineSecurity+OnlineBackup+TechSupport+StreamingMovies+Contract+PaperlessBilling+PaymentMethod+Tenure , family = binomial(link = "logit"),data = trainingSet)
+
+
+
+model_refined<-glm(Attrition~MultipleLines+SeniorCitizen+InternetService+
+                     OnlineSecurity+TechSupport+ Contract+StreamingTV+
+                     StreamingMovies+PaperlessBilling+PaymentMethod+TotalCharges+
+                     Tenure , family = binomial(link = "logit"),data = trainingSet)
 summary(model_refined)
 
-## Predict values with logistic regression. threshold = 0.5.
-predictions<-ifelse(predict(model_refined,testSet,type="response")>0.5,"Yes","No")
-## Convert to a factor.
-predictions<-factor(predictions,labels = c("No","Yes"))
-summary(predictions)
+## Decision tree model
+treemodel <- rpart(Attrition~MultipleLines+SeniorCitizen+InternetService+
+                     OnlineSecurity+TechSupport+ Contract+StreamingTV+
+                     StreamingMovies+PaperlessBilling+PaymentMethod+TotalCharges+
+                     Tenure, data=trainingSet)
+summary(treemodel)
 
-comparison<-data.frame(predictions,testSet$Churn)
-summary(comparison)
+## Predict values with tree.
+tree_prediction <- predict(treemodel,testSet)
+roc.curve(testSet$Attrition,tree_prediction)
+predictions_tree<-ifelse(tree_prediction>0.5,"Yes","No")
+## Convert to a factor.
+predictions_tree<-factor(predictions_tree,labels = c("No","Yes"))
+
+summary(predictions_tree)
+
+## Predict values with logistic regression. threshold = 0.5.
+predictions_logistic <- predict(model_refined,testSet,type="response")
+roc.curve(testSet$Attrition,predictions_logistic)
+
+predictions_refined<-ifelse(predictions_logistic>0.5,"Yes","No")
+## Convert to a factor.
+predictions_refined<-factor(predictions_refined,labels = c("No","Yes"))
+
+summary(predictions_refined)
+
+comparison<-data.frame(predictions_tree,predictions_refined,testSet$Churn)
+print(i)
+print(summary(comparison))
+
+}
 
 
 
